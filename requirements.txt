@@ -1,0 +1,5 @@
+inputs==0.4
+psutil==5.4.7
+PyQt5==5.11.2
+PyQt5-sip==4.19.12
+rlbot==0.0.28
