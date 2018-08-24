@@ -32,6 +32,9 @@ class Extractor:
         """Gives a unit vector indicating which directon the bot's car is facing as a vector3"""
         return self.get_car_facing_vector(self._car)
 
+    def get_my_team(self):
+        return self._car.team
+
 
     @staticmethod
     def get_car_location(car: PlayerInfo) -> Vector:

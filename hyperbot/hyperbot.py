@@ -6,6 +6,9 @@ from extractor import Extractor
 from vector import Vector
 
 
+BALL_SIDE_EPSILON = 0.1
+
+
 class HyperBot(BaseAgent):
 
     def initialize_agent(self):
@@ -19,8 +22,21 @@ class HyperBot(BaseAgent):
         car_location = extractor.get_my_car_location()
         car_direction = extractor.get_my_car_facing_vector()
 
-         #car_to_ball = ball_location - car_location
-        angle_car_to_ball = ball_location.argument() - car_location.argument()
+        # Determine whether the ball is on the left or the right of where the car is facing
+        # Positive value means the ball is to the right, negative is to the left
+        ball_side = car_direction.cross3(ball_location - car_location)[2]
+
+        if abs(ball_side) > BALL_SIDE_EPSILON:
+            if ball_side > 0:
+                turn = 1.0
+            else:
+                turn = -1.0
+        else:
+            turn = 0
+
+        self.controller_state.throttle = 1.0
+        self.controller_state.steer = turn
+        return self.controller_state
 
 
 
@@ -42,10 +58,10 @@ class HyperBot(BaseAgent):
         # else:
         #     turn = 1.0
         #
-        # self.controller_state.throttle = 1.0
+        #self.controller_state.throttle = 1.0
         # self.controller_state.steer = turn
 
-        return self.controller_state
+        #return self.controller_state
 
 
 class Vector2:
