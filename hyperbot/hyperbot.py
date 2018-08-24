@@ -2,6 +2,8 @@ import math
 
 from rlbot.agents.base_agent import BaseAgent, SimpleControllerState
 from rlbot.utils.structures.game_data_struct import GameTickPacket
+from extractor import Extractor
+from vector import Vector
 
 
 class HyperBot(BaseAgent):
@@ -11,23 +13,37 @@ class HyperBot(BaseAgent):
         self.controller_state = SimpleControllerState()
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        ball_location = Vector2(packet.game_ball.physics.location.x, packet.game_ball.physics.location.y)
+        extractor = Extractor(packet, car=packet.game_cars[self.index])
 
-        my_car = packet.game_cars[self.index]
-        car_location = Vector2(my_car.physics.location.x, my_car.physics.location.y)
-        car_direction = get_car_facing_vector(my_car)
-        car_to_ball = ball_location - car_location
+        ball_location = extractor.get_ball_location()
+        car_location = extractor.get_my_car_location()
+        car_direction = extractor.get_my_car_facing_vector()
 
-        steer_correction_radians = car_direction.correction_to(car_to_ball)
+         #car_to_ball = ball_location - car_location
+        angle_car_to_ball = ball_location.argument() - car_location.argument()
 
-        if steer_correction_radians > 0:
-            # Positive radians in the unit circle is a turn to the left.
-            turn = -1.0  # Negative value for a turn to the left.
-        else:
-            turn = 1.0
 
-        self.controller_state.throttle = 1.0
-        self.controller_state.steer = turn
+
+
+
+        # ball_location = Vector2(packet.game_ball.physics.location.x, packet.game_ball.physics.location.y)
+        #
+        #
+        # my_car = packet.game_cars[self.index]
+        # car_location = Vector2(my_car.physics.location.x, my_car.physics.location.y)
+        # car_direction = get_car_facing_vector(my_car)
+        # car_to_ball = ball_location - car_location
+        #
+        # steer_correction_radians = car_direction.correction_to(car_to_ball)
+        #
+        # if steer_correction_radians > 0:
+        #     # Positive radians in the unit circle is a turn to the left.
+        #     turn = -1.0  # Negative value for a turn to the left.
+        # else:
+        #     turn = 1.0
+        #
+        # self.controller_state.throttle = 1.0
+        # self.controller_state.steer = turn
 
         return self.controller_state
 

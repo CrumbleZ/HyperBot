@@ -25,5 +25,3 @@ IF "!is_safe_to_upgrade!"=="True" (
 )
 
 python -c "from rlbot.gui.qt_root import RLBotQTGui; RLBotQTGui.main();"
-
-pause
